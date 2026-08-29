@@ -457,6 +457,8 @@ namespace TrOCR
             this.groupBox_合并文本 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel_合并文本 = new System.Windows.Forms.TableLayoutPanel();
             this.checkBox_合并去除所有空格 = new System.Windows.Forms.CheckBox();
+            this.label_合并关键词 = new System.Windows.Forms.Label();
+            this.textBox_合并关键词 = new System.Windows.Forms.TextBox();
             this.checkBox_合并去除空格 = new System.Windows.Forms.CheckBox();
             this.checkBox_合并自动复制 = new System.Windows.Forms.CheckBox();
             this.Page_更新 = new System.Windows.Forms.TabPage();
@@ -5558,12 +5560,15 @@ namespace TrOCR
             this.tableLayoutPanel_合并文本.Controls.Add(this.checkBox_合并去除所有空格, 1, 0);
             this.tableLayoutPanel_合并文本.Controls.Add(this.checkBox_合并去除空格, 0, 0);
             this.tableLayoutPanel_合并文本.Controls.Add(this.checkBox_合并自动复制, 0, 1);
+            this.tableLayoutPanel_合并文本.Controls.Add(this.label_合并关键词, 0, 2);
+            this.tableLayoutPanel_合并文本.Controls.Add(this.textBox_合并关键词, 1, 2);
             this.tableLayoutPanel_合并文本.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel_合并文本.Location = new System.Drawing.Point(4, 22);
             this.tableLayoutPanel_合并文本.Name = "tableLayoutPanel_合并文本";
-            this.tableLayoutPanel_合并文本.RowCount = 2;
-            this.tableLayoutPanel_合并文本.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel_合并文本.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel_合并文本.RowCount = 3;
+            this.tableLayoutPanel_合并文本.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            this.tableLayoutPanel_合并文本.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            this.tableLayoutPanel_合并文本.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.34F));
             this.tableLayoutPanel_合并文本.Size = new System.Drawing.Size(496, 72);
             this.tableLayoutPanel_合并文本.TabIndex = 0;
             // 
@@ -5604,6 +5609,24 @@ namespace TrOCR
             this.checkBox_合并自动复制.TabIndex = 1;
             this.checkBox_合并自动复制.Text = "合并后自动复制";
             this.checkBox_合并自动复制.UseVisualStyleBackColor = true;
+            // 
+            // label_合并关键词
+            // 
+            this.label_合并关键词.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label_合并关键词.AutoSize = true;
+            this.label_合并关键词.Location = new System.Drawing.Point(4, 78);
+            this.label_合并关键词.Name = "label_合并关键词";
+            this.label_合并关键词.Size = new System.Drawing.Size(65, 12);
+            this.label_合并关键词.TabIndex = 4;
+            this.label_合并关键词.Text = "合并关键词";
+            // 
+            // textBox_合并关键词
+            // 
+            this.textBox_合并关键词.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_合并关键词.Location = new System.Drawing.Point(183, 75);
+            this.textBox_合并关键词.Name = "textBox_合并关键词";
+            this.textBox_合并关键词.Size = new System.Drawing.Size(290, 21);
+            this.textBox_合并关键词.TabIndex = 5;
             // 
             // Page_更新
             // 
@@ -7520,6 +7543,8 @@ namespace TrOCR
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_合并文本;
         private System.Windows.Forms.CheckBox checkBox_合并自动复制;
         private System.Windows.Forms.CheckBox checkBox_合并去除空格;
+        private System.Windows.Forms.Label label_合并关键词;
+        private System.Windows.Forms.TextBox textBox_合并关键词;
         private System.Windows.Forms.GroupBox groupBox_拆分文本;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_拆分文本;
         private System.Windows.Forms.CheckBox checkBox_拆分后自动复制;

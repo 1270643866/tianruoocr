@@ -889,6 +889,7 @@ namespace TrOCR
 			}
 
             checkBox_合并去除所有空格.Checked = TrOCRUtils.LoadSetting("工具栏", "IsMergeRemoveAllSpace", false);
+            textBox_合并关键词.Text = TrOCRUtils.LoadSetting("工具栏", "MergeKeywords", "问：,问:,答：,答:");
 
 			var value_IsMergeAutoCopy = IniHelper.GetValue("工具栏", "IsMergeAutoCopy");
 			if (value_IsMergeAutoCopy == "发生错误")
@@ -2612,6 +2613,8 @@ namespace TrOCR
 
             IniHelper.SetValue("工具栏", "IsMergeRemoveSpace", checkBox_合并去除空格.Checked.ToString());
             IniHelper.SetValue("工具栏", "IsMergeRemoveAllSpace", checkBox_合并去除所有空格.Checked.ToString());
+            IniHelper.SetValue("工具栏", "MergeKeywords", textBox_合并关键词.Text.Trim());
+            StaticValue.MergeKeywords = textBox_合并关键词.Text.Trim();
             IniHelper.SetValue("工具栏", "IsMergeAutoCopy", checkBox_合并自动复制.Checked.ToString());
             IniHelper.SetValue("工具栏", "IsSplitAutoCopy", checkBox_拆分后自动复制.Checked.ToString());
 

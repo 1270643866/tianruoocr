@@ -66,6 +66,8 @@ namespace TrOCR.Helper
         public static bool IsMergeRemoveAllSpace = false;
         // 合并后自动复制
         public static bool IsMergeAutoCopy = false;
+        // 合并关键词（以这些关键词开头的行不与上一行合并，多个关键词用逗号/空格分隔）
+        public static string MergeKeywords = "问：,问:,答：,答:";
         // 拆分后自动复制
         public static bool IsSplitAutoCopy = false;
 
@@ -234,6 +236,7 @@ namespace TrOCR.Helper
             // --- 新增: 加载工具栏设置 ---
             IsMergeRemoveSpace = Convert.ToBoolean(GetValue("工具栏", "IsMergeRemoveSpace", "False"));
             IsMergeRemoveAllSpace = Convert.ToBoolean(GetValue("工具栏", "IsMergeRemoveAllSpace", "False"));
+            MergeKeywords = GetValue("工具栏", "MergeKeywords", "问：,问:,答：,答:");
 
             IsMergeAutoCopy = Convert.ToBoolean(GetValue("工具栏", "IsMergeAutoCopy", "False"));
             IsSplitAutoCopy = Convert.ToBoolean(GetValue("工具栏", "IsSplitAutoCopy", "False"));

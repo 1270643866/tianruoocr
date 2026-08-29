@@ -603,19 +603,66 @@ namespace TrOCR
             HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
+      private static bool EndsWithSentencePunct(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return false;
+            char last = text[text.Length - 1];
+            if ("。．.!?！？；;…".IndexOf(last) >= 0) return true;
+            if (text.Length >= 2 && "”’」』）》)\"]".IndexOf(last) >= 0)
+            {
+                return "。．.!?！？；;…".IndexOf(text[text.Length - 2]) >= 0;
+            }
+            return false;
+        }
+
+        private static string[] GetMergeKeywords()
+        {
+            string raw = StaticValue.MergeKeywords;
+            if (string.IsNullOrWhiteSpace(raw)) return new string[0];
+            return raw.Split(new[] { '，', ',', '；', ';', '、', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static bool StartsWithKeyword(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return false;
+            foreach (string kw in GetMergeKeywords())
+            {
+                if (text.StartsWith(kw, StringComparison.OrdinalIgnoreCase)) return true;
+            }
+            return false;
+        }
+
       public void toolStripButtonMerge_Click(object sender, EventArgs e)
         {
             string currentText = this.richTextBox1.Text;
             if (string.IsNullOrEmpty(currentText)) return;
             string finalText;
 
-            // 【新增】分支1：处理“去除所有空格”
+            // 【新增】分支1：处理“去除所有空格”（按句合并：句末有结束标点则保留换行）
             if (StaticValue.IsMergeRemoveAllSpace)
             {
-                // 使用正则表达式一次性移除所有空白字符（包括空格、换行、制表符等）
-                // finalText = Regex.Replace(currentText, @"\s+", "");
-                // 移除所有换行和空格（半角和全角）
-                finalText = Regex.Replace(currentText, @"[\r\n 　]+", "");
+                string[] lines = currentText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
+
+                StringBuilder sbAll = new StringBuilder();
+                string lastLine = null;
+                foreach (string rawLine in lines)
+                {
+                    // 移除本行内的所有空格（半角和全角）
+                    string trimmed = Regex.Replace(rawLine, "[ \u3000]+", "");
+                    if (string.IsNullOrEmpty(trimmed))
+                    {
+                        lastLine = null; // 空行视为段落分隔
+                        continue;
+                    }
+                    if (sbAll.Length > 0)
+                    {
+                        // 仅当上一行句末无结束标点且当前行不以关键词开头时才合并，否则保留换行
+                        sbAll.Append(lastLine == null || EndsWithSentencePunct(lastLine) || StartsWithKeyword(trimmed) ? "\r\n" : "");
+                    }
+                    sbAll.Append(trimmed);
+                    lastLine = trimmed;
+                }
+                finalText = sbAll.ToString();
             }
             else// 【保留】分支 2 和 3：执行原来的智能合并或默认合并
             {
@@ -685,14 +732,29 @@ namespace TrOCR
 
                     sb.Append(processedLine);
 
-                    // 4. 处理行与行之间的连接（这部分逻辑保持不变）
+                    // 【新增】上一行句末已有结束标点时保留换行，不与下一行合并
+                    if (EndsWithSentencePunct(processedLine))
+                    {
+                        sb.Append("\r\n");
+                        continue;
+                    }
+
+                    // 【新增】下一行以关键词开头时不与上一行合并，保留换行
+                    if (i < lines.Length - 1 && StartsWithKeyword(lines[i + 1].Trim()))
+                    {
+                        sb.Append("\r\n");
+                        continue;
+                    }
+
+                    // 4. 处理行与行之间的连接：仅当上一行句末没有结束标点时才合并
                     if (i < lines.Length - 1)
                     {
                         string nextLineRaw = lines[i + 1];
                         if (!string.IsNullOrWhiteSpace(nextLineRaw))
                         {
                             char lastChar = processedLine.LastOrDefault();
-                            string nextLineProcessed = StaticValue.IsMergeRemoveSpace ? Regex.Replace(nextLineRaw, @"[ \　]+", " ").Trim() : nextLineRaw.Trim();
+
+                            string nextLineProcessed = StaticValue.IsMergeRemoveSpace ? Regex.Replace(nextLineRaw, "[ \　]+", " ").Trim() : nextLineRaw.Trim();
 
                             if (!string.IsNullOrEmpty(nextLineProcessed))
                             {
