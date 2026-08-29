@@ -678,7 +678,7 @@ namespace TrOCR
                         // --- 全新的、最终版的智能空格处理逻辑 ---
 
                         // 1. 规范化：将一行中连续的多个空格（半角/全角）替换为单个半角空格，并去除首尾空格
-                        string normalizedLine = Regex.Replace(lines[i], @"[ \　]+", " ").Trim();
+                        string normalizedLine = Regex.Replace(lines[i], "[ \u3000]+", " ").Trim();
 
                         if (normalizedLine.Length <= 1)
                         {
@@ -754,7 +754,7 @@ namespace TrOCR
                         {
                             char lastChar = processedLine.LastOrDefault();
 
-                            string nextLineProcessed = StaticValue.IsMergeRemoveSpace ? Regex.Replace(nextLineRaw, "[ \　]+", " ").Trim() : nextLineRaw.Trim();
+                            string nextLineProcessed = StaticValue.IsMergeRemoveSpace ? Regex.Replace(nextLineRaw, "[ \u3000]+", " ").Trim() : nextLineRaw.Trim();
 
                             if (!string.IsNullOrEmpty(nextLineProcessed))
                             {
