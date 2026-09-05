@@ -70,6 +70,10 @@ namespace TrOCR.Helper
         public static string MergeKeywords = "问：,问:,答：,答:";
         // 拆分后自动复制
         public static bool IsSplitAutoCopy = false;
+        // 复制/发送时写入文件模式
+        public static bool IsWriteToFile = false;
+        // 写入文件模式的目标文件路径
+        public static string WriteToFilePath = "";
 
         public static float DpiFactor;
 
@@ -240,6 +244,8 @@ namespace TrOCR.Helper
 
             IsMergeAutoCopy = Convert.ToBoolean(GetValue("工具栏", "IsMergeAutoCopy", "False"));
             IsSplitAutoCopy = Convert.ToBoolean(GetValue("工具栏", "IsSplitAutoCopy", "False"));
+            IsWriteToFile = Convert.ToBoolean(GetValue("工具栏", "IsWriteToFile", "False"));
+            WriteToFilePath = GetValue("工具栏", "WriteToFilePath", "");
 
 
             // --- 新增: 加载百度表格识别密钥 ---

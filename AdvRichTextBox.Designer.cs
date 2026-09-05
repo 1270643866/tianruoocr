@@ -849,7 +849,28 @@ namespace TrOCR
             HelpWin32.keybd_event(Keys.V, 0, 0u, 0u);
             HelpWin32.keybd_event(Keys.V, 0, 2u, 0u);
             HelpWin32.keybd_event(Keys.ControlKey, 0, 2u, 0u);
-            CommonHelper.ShowHelpMsg("已复制");
+            if (StaticValue.IsWriteToFile)
+            {
+                string filePath = StaticValue.WriteToFilePath;
+                if (string.IsNullOrWhiteSpace(filePath))
+                {
+                    CommonHelper.ShowHelpMsg("未设置写入文件路径，请在设置中配置");
+                    return;
+                }
+                try
+                {
+                    File.AppendAllText(filePath, textToCopy + "\r\n", Encoding.UTF8);
+                    CommonHelper.ShowHelpMsg("已复制并写入文件");
+                }
+                catch (Exception ex)
+                {
+                    CommonHelper.ShowHelpMsg("写入文件失败：" + ex.Message);
+                }
+            }
+            else
+            {
+                CommonHelper.ShowHelpMsg("已复制");
+            }
         }
 
 

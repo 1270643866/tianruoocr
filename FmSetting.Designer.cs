@@ -461,6 +461,10 @@ namespace TrOCR
             this.textBox_合并关键词 = new System.Windows.Forms.TextBox();
             this.checkBox_合并去除空格 = new System.Windows.Forms.CheckBox();
             this.checkBox_合并自动复制 = new System.Windows.Forms.CheckBox();
+            this.groupBox_写入文件 = new System.Windows.Forms.GroupBox();
+            this.checkBox_写入文件模式 = new System.Windows.Forms.CheckBox();
+            this.textBox_写入文件路径 = new System.Windows.Forms.TextBox();
+            this.button_写入文件浏览 = new System.Windows.Forms.Button();
             this.Page_更新 = new System.Windows.Forms.TabPage();
             this.更新Button_check = new System.Windows.Forms.Button();
             this.更新Button = new System.Windows.Forms.Button();
@@ -5491,6 +5495,7 @@ namespace TrOCR
             // 
             this.Page_工具栏.Controls.Add(this.groupBox_拆分文本);
             this.Page_工具栏.Controls.Add(this.groupBox_合并文本);
+            this.Page_工具栏.Controls.Add(this.groupBox_写入文件);
             this.Page_工具栏.Location = new System.Drawing.Point(4, 25);
             this.Page_工具栏.Margin = new System.Windows.Forms.Padding(4);
             this.Page_工具栏.Name = "Page_工具栏";
@@ -5571,6 +5576,41 @@ namespace TrOCR
             this.tableLayoutPanel_合并文本.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.34F));
             this.tableLayoutPanel_合并文本.Size = new System.Drawing.Size(496, 72);
             this.tableLayoutPanel_合并文本.TabIndex = 0;
+
+            // groupBox_写入文件
+            this.groupBox_写入文件.Controls.Add(this.checkBox_写入文件模式);
+            this.groupBox_写入文件.Controls.Add(this.textBox_写入文件路径);
+            this.groupBox_写入文件.Controls.Add(this.button_写入文件浏览);
+            this.groupBox_写入文件.Location = new System.Drawing.Point(8, 112);
+            this.groupBox_写入文件.Name = "groupBox_写入文件";
+            this.groupBox_写入文件.Size = new System.Drawing.Size(504, 62);
+            this.groupBox_写入文件.TabStop = false;
+            this.groupBox_写入文件.Text = "复制/发送时写入文件";
+
+            // checkBox_写入文件模式
+            this.checkBox_写入文件模式.AutoSize = true;
+            this.checkBox_写入文件模式.Location = new System.Drawing.Point(8, 22);
+            this.checkBox_写入文件模式.Name = "checkBox_写入文件模式";
+            this.checkBox_写入文件模式.Size = new System.Drawing.Size(140, 19);
+            this.checkBox_写入文件模式.TabIndex = 0;
+            this.checkBox_写入文件模式.Text = "启用写入文件模式";
+            this.checkBox_写入文件模式.UseVisualStyleBackColor = true;
+            this.checkBox_写入文件模式.CheckedChanged += new System.EventHandler(this.checkBox_写入文件模式_CheckedChanged);
+
+            // textBox_写入文件路径
+            this.textBox_写入文件路径.Location = new System.Drawing.Point(150, 21);
+            this.textBox_写入文件路径.Name = "textBox_写入文件路径";
+            this.textBox_写入文件路径.Size = new System.Drawing.Size(260, 21);
+            this.textBox_写入文件路径.TabIndex = 1;
+
+            // button_写入文件浏览
+            this.button_写入文件浏览.Location = new System.Drawing.Point(418, 19);
+            this.button_写入文件浏览.Name = "button_写入文件浏览";
+            this.button_写入文件浏览.Size = new System.Drawing.Size(75, 25);
+            this.button_写入文件浏览.TabIndex = 2;
+            this.button_写入文件浏览.Text = "浏览...";
+            this.button_写入文件浏览.UseVisualStyleBackColor = true;
+            this.button_写入文件浏览.Click += new System.EventHandler(this.button_写入文件浏览_Click);
             // 
             // checkBox_合并去除所有空格
             // 
@@ -7545,6 +7585,10 @@ namespace TrOCR
         private System.Windows.Forms.CheckBox checkBox_合并去除空格;
         private System.Windows.Forms.Label label_合并关键词;
         private System.Windows.Forms.TextBox textBox_合并关键词;
+        private System.Windows.Forms.GroupBox groupBox_写入文件;
+        private System.Windows.Forms.CheckBox checkBox_写入文件模式;
+        private System.Windows.Forms.TextBox textBox_写入文件路径;
+        private System.Windows.Forms.Button button_写入文件浏览;
         private System.Windows.Forms.GroupBox groupBox_拆分文本;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_拆分文本;
         private System.Windows.Forms.CheckBox checkBox_拆分后自动复制;

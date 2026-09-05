@@ -891,6 +891,11 @@ namespace TrOCR
             checkBox_合并去除所有空格.Checked = TrOCRUtils.LoadSetting("工具栏", "IsMergeRemoveAllSpace", false);
             textBox_合并关键词.Text = TrOCRUtils.LoadSetting("工具栏", "MergeKeywords", "问：,问:,答：,答:");
 
+            checkBox_写入文件模式.Checked = TrOCRUtils.LoadSetting("工具栏", "IsWriteToFile", false);
+            textBox_写入文件路径.Text = TrOCRUtils.LoadSetting("工具栏", "WriteToFilePath", "");
+            textBox_写入文件路径.Enabled = checkBox_写入文件模式.Checked;
+            button_写入文件浏览.Enabled = checkBox_写入文件模式.Checked;
+
 			var value_IsMergeAutoCopy = IniHelper.GetValue("工具栏", "IsMergeAutoCopy");
 			if (value_IsMergeAutoCopy == "发生错误")
 			{
@@ -2422,6 +2427,30 @@ namespace TrOCR
         /// <summary>
         /// 【新增】处理“智能去除空格”复选框的互斥逻辑
         /// </summary>
+        private void checkBox_写入文件模式_CheckedChanged(object sender, EventArgs e)
+        {
+            textBox_写入文件路径.Enabled = checkBox_写入文件模式.Checked;
+            button_写入文件浏览.Enabled = checkBox_写入文件模式.Checked;
+        }
+
+        private void button_写入文件浏览_Click(object sender, EventArgs e)
+        {
+            using (var saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "选择识别结果写入的文件";
+                saveFileDialog.Filter = "文本文件 (*.txt)|*.txt|所有文件 (*.*)|*.*";
+                saveFileDialog.OverwritePrompt = false;
+                if (!string.IsNullOrWhiteSpace(textBox_写入文件路径.Text))
+                {
+                    saveFileDialog.FileName = textBox_写入文件路径.Text;
+                }
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    textBox_写入文件路径.Text = saveFileDialog.FileName;
+                }
+            }
+        }
+
         private void checkBox_合并去除空格_CheckedChanged(object sender, EventArgs e)
         {
             // 只有当用户“勾选”此项时，才触发互斥
@@ -2615,6 +2644,10 @@ namespace TrOCR
             IniHelper.SetValue("工具栏", "IsMergeRemoveAllSpace", checkBox_合并去除所有空格.Checked.ToString());
             IniHelper.SetValue("工具栏", "MergeKeywords", textBox_合并关键词.Text.Trim());
             StaticValue.MergeKeywords = textBox_合并关键词.Text.Trim();
+            IniHelper.SetValue("工具栏", "IsWriteToFile", checkBox_写入文件模式.Checked.ToString());
+            StaticValue.IsWriteToFile = checkBox_写入文件模式.Checked;
+            IniHelper.SetValue("工具栏", "WriteToFilePath", textBox_写入文件路径.Text.Trim());
+            StaticValue.WriteToFilePath = textBox_写入文件路径.Text.Trim();
             IniHelper.SetValue("工具栏", "IsMergeAutoCopy", checkBox_合并自动复制.Checked.ToString());
             IniHelper.SetValue("工具栏", "IsSplitAutoCopy", checkBox_拆分后自动复制.Checked.ToString());
 
