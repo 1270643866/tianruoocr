@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -225,6 +225,8 @@ namespace TrOCR
                 {
                     Task.Factory.StartNew(CheckUpdate);
                 }
+                // 启动时提示当前复制/发送模式
+                CommonHelper.ShowHelpMsg(StaticValue.IsWriteToFile ? "当前为写入文件模式" : "当前为普通模式", 1200u);
                 Application.Run(new FmMain());
             }
             catch (Exception ex)

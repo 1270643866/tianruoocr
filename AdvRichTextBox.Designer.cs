@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -905,9 +906,29 @@ namespace TrOCR
 
             if (File.Exists(filePath))
             {
-                using (var doc = WordprocessingDocument.Open(filePath, true))
+                WordprocessingDocument doc = TryOpenDocx(filePath);
+                WordBody body = doc != null ? TryGetDocxBody(doc) : null;
+
+                if (body == null)
                 {
-                    WordBody body = doc.MainDocumentPart.Document.Body;
+                    // 打不开或文档结构缺失（WPS 等工具生成的 docx 缺少 [Content_Types].xml 规范条目）：先修复再重试一次
+                    if (doc != null) doc.Dispose();
+                    RepairDocxMissingRelsEntry(filePath);
+                    doc = TryOpenDocx(filePath);
+                    body = doc != null ? TryGetDocxBody(doc) : null;
+                }
+
+                if (doc == null)
+                {
+                    throw new Exception("无法打开该 Word 文档，文件可能已损坏或不是有效的 .docx 格式");
+                }
+
+                using (doc)
+                {
+                    if (body == null)
+                    {
+                        throw new Exception("无法读取该 Word 文档的内容，文件可能不完整，请更换其他 .docx 文件");
+                    }
                     foreach (var p in paragraphs)
                     {
                         body.Append(p);
@@ -923,6 +944,76 @@ namespace TrOCR
                     mainPart.Document = new WordDoc(new WordBody(paragraphs));
                     mainPart.Document.Save();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 尝试打开 .docx；SDK 对损坏/非 docx 文件会抛出难懂的异常，这里统一返回 null 交给调用方修复重试
+        /// </summary>
+        private static WordprocessingDocument TryOpenDocx(string filePath)
+        {
+            try
+            {
+                return WordprocessingDocument.Open(filePath, true);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 安全获取文档正文，文档结构异常（MainDocumentPart/Document/Body 为 null 或加载失败）时返回 null
+        /// </summary>
+        private static WordBody TryGetDocxBody(WordprocessingDocument doc)
+        {
+            try
+            {
+                return doc.MainDocumentPart?.Document?.Body;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 修复 WPS 等工具生成的 docx 缺少 [Content_Types].xml 中 rels 默认类型声明的问题（OpenXml SDK 已知缺陷，Word 本身能容忍）。
+        /// 全程在内存中修复，成功构建出修复结果才写回原文件；修复失败则原文件保持不动。
+        /// </summary>
+        private static void RepairDocxMissingRelsEntry(string filePath)
+        {
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(filePath);
+                using (var ms = new MemoryStream())
+                {
+                    ms.Write(bytes, 0, bytes.Length);
+                    using (var zip = new ZipArchive(ms, ZipArchiveMode.Update, true))
+                    {
+                        var entry = zip.GetEntry("[Content_Types].xml");
+                        if (entry == null) return;
+                        string xml;
+                        using (var reader = new StreamReader(entry.Open()))
+                        {
+                            xml = reader.ReadToEnd();
+                        }
+                        if (xml.IndexOf("Extension=\"rels\"", StringComparison.OrdinalIgnoreCase) >= 0) return;
+                        const string relsDefault = "<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>";
+                        xml = xml.Replace("</Types>", relsDefault + "</Types>");
+                        entry.Delete();
+                        var newEntry = zip.CreateEntry("[Content_Types].xml");
+                        using (var writer = new StreamWriter(newEntry.Open(), new UTF8Encoding(false)))
+                        {
+                            writer.Write(xml);
+                        }
+                    }
+                    File.WriteAllBytes(filePath, ms.ToArray());
+                }
+            }
+            catch
+            {
+                // 修复失败保持原样，由上层给出统一错误提示
             }
         }
 
