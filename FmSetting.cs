@@ -2438,7 +2438,7 @@ namespace TrOCR
             using (var saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "选择识别结果写入的文件";
-                saveFileDialog.Filter = "文本文件 (*.txt)|*.txt|所有文件 (*.*)|*.*";
+                saveFileDialog.Filter = "文本文件 (*.txt)|*.txt|Markdown (*.md)|*.md|Word 文档 (*.docx)|*.docx|所有文件 (*.*)|*.*";
                 saveFileDialog.OverwritePrompt = false;
                 if (!string.IsNullOrWhiteSpace(textBox_写入文件路径.Text))
                 {

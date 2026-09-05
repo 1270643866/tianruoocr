@@ -502,7 +502,7 @@ namespace TrOCR
 			base.Load += new global::System.EventHandler(this.Load_Click);
 			base.Resize += new global::System.EventHandler(this.Form_Resize);
 			base.Name = "Form1";
-			this.Text = "耗时：";
+			this.Text = "耗时：" + (global::TrOCR.Helper.StaticValue.IsWriteToFile ? "【写入文件模式】" : "【普通模式】");
 			if (global::TrOCR.Helper.IniHelper.GetValue("工具栏", "顶置") == "True")
 			{
 				base.TopMost = true;

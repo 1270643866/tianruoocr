@@ -24,6 +24,12 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TrOCR.Helper;
+using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
+using WordRun = DocumentFormat.OpenXml.Wordprocessing.Run;
+using WordText = DocumentFormat.OpenXml.Wordprocessing.Text;
+using WordBody = DocumentFormat.OpenXml.Wordprocessing.Body;
+using WordDoc = DocumentFormat.OpenXml.Wordprocessing.Document;
+using WordprocessingDocument = DocumentFormat.OpenXml.Packaging.WordprocessingDocument;
 
 namespace TrOCR
 {
@@ -860,7 +866,21 @@ namespace TrOCR
                 }
                 try
                 {
-                    File.AppendAllText(filePath, textToCopy + "\r\n", Encoding.UTF8);
+                    string ext = Path.GetExtension(filePath).ToLowerInvariant();
+                    if (ext == ".docx")
+                    {
+                        AppendToWordDocument(filePath, textToCopy);
+                    }
+                    else if (ext == ".doc")
+                    {
+                        CommonHelper.ShowHelpMsg("暂不支持旧版 .doc 格式，请改用 .docx");
+                        return;
+                    }
+                    else
+                    {
+                        // txt / md 等纯文本文件：换行追加
+                        File.AppendAllText(filePath, textToCopy + "\r\n", Encoding.UTF8);
+                    }
                     CommonHelper.ShowHelpMsg("已复制并写入文件");
                 }
                 catch (Exception ex)
@@ -871,6 +891,38 @@ namespace TrOCR
             else
             {
                 CommonHelper.ShowHelpMsg("已复制");
+            }
+        }
+
+        /// <summary>
+        /// 将文本按行追加到 Word 文档（.docx）末尾，文件不存在则新建
+        /// </summary>
+        private static void AppendToWordDocument(string filePath, string textToCopy)
+        {
+            var paragraphs = textToCopy
+                .Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None)
+                .Select(line => new WordParagraph(new WordRun(new WordText(line))));
+
+            if (File.Exists(filePath))
+            {
+                using (var doc = WordprocessingDocument.Open(filePath, true))
+                {
+                    WordBody body = doc.MainDocumentPart.Document.Body;
+                    foreach (var p in paragraphs)
+                    {
+                        body.Append(p);
+                    }
+                    doc.MainDocumentPart.Document.Save();
+                }
+            }
+            else
+            {
+                using (var doc = WordprocessingDocument.Create(filePath, DocumentFormat.OpenXml.WordprocessingDocumentType.Document))
+                {
+                    var mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new WordDoc(new WordBody(paragraphs));
+                    mainPart.Document.Save();
+                }
             }
         }
 

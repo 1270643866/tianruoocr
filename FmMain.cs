@@ -4876,7 +4876,7 @@ namespace TrOCR
 
 				// --- 步骤 2: 集中进行所有UI更新 ---
 				// a. 先让窗口框架稳定
-				Text = "耗时：" + str;
+				Text = "耗时：" + str + (StaticValue.IsWriteToFile ? "　【写入文件模式】" : "　【普通模式】");
 				FormBorderStyle = FormBorderStyle.Sizable;
 				// 在设置尺寸之前记录一次，这是看到 Bug 的关键
 				System.Diagnostics.Debug.WriteLine("Main_OCR_Thread_last: About to set final size.");
@@ -7905,7 +7905,7 @@ namespace TrOCR
 			{
 				TopMost = false;
 			}
-			Text = "耗时：" + str;
+			Text = "耗时：" + str + (StaticValue.IsWriteToFile ? "　【写入文件模式】" : "　【普通模式】");
 			// 根据接口类型处理识别结果
 			if (interface_flag == "百度表格")
 			{
