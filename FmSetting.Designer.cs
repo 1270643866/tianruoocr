@@ -5581,7 +5581,7 @@ namespace TrOCR
             this.groupBox_写入文件.Controls.Add(this.checkBox_写入文件模式);
             this.groupBox_写入文件.Controls.Add(this.textBox_写入文件路径);
             this.groupBox_写入文件.Controls.Add(this.button_写入文件浏览);
-            this.groupBox_写入文件.Location = new System.Drawing.Point(8, 112);
+            this.groupBox_写入文件.Location = new System.Drawing.Point(8, 210);
             this.groupBox_写入文件.Name = "groupBox_写入文件";
             this.groupBox_写入文件.Size = new System.Drawing.Size(504, 62);
             this.groupBox_写入文件.TabStop = false;
